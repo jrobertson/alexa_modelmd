@@ -17,7 +17,7 @@ class AlexaModelMd < WikiMd
 
     def initialize(s)
 
-      doc = Rexle.new("<root>%s</root>" % \
+      doc = Rexle.new("<root9>%s</root9>" % \
         Kramdown::Document.new(Martile.new(s).to_s).to_html)
       @name = doc.root.element('h2/text()').to_s
       @utterances = doc.root.xpath('ul/li/text()').map(&:to_s)
@@ -41,6 +41,13 @@ class AlexaModelMd < WikiMd
 
     end
 
+  end
+  
+  # This generates a plain text file representing the Alexa Model to be 
+  # built using the alexa_modelbuilder gem
+  #  
+  def to_modelb
+    Rexslt.new(modelbuilder_xslt(), to_xml()).to_s    
   end
 
   def to_xml()
@@ -91,5 +98,47 @@ class AlexaModelMd < WikiMd
     Rexle.new(a).xml pretty: true
 
   end
+  
+  private
+  
+  def modelbuilder_xslt()
+<<EOF
+<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'>
+<xsl:output method="xml" indent="yes" omit-xml-declaration="yes" />
 
+  <xsl:template match='model'>name: <xsl:value-of select='summary/title' />
+invocation: <xsl:value-of select='summary/invocation' />
+<xsl:text>
+</xsl:text>
+      <xsl:apply-templates select='entries/entry' />
+endpoint: <xsl:value-of select='summary/endpoint' />
+
+  </xsl:template>
+
+  <xsl:template match='entries/entry'>
+# <xsl:value-of select='topic' /><xsl:text>
+</xsl:text>
+  <xsl:apply-templates select='intents/intent' />
+  </xsl:template>
+
+  <xsl:template match='intents/intent'>
+<xsl:text>
+</xsl:text>
+<xsl:value-of select='name' />
+  <xsl:apply-templates select='utterances/utterance' />
+<xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match='utterances/utterance'>
+<xsl:text>
+  </xsl:text>
+  <xsl:value-of select='.' />
+
+  </xsl:template>
+
+
+</xsl:stylesheet>
+EOF
+  end
 end
