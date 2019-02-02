@@ -49,6 +49,10 @@ class AlexaModelMd < WikiMd
   def to_modelb
     Rexslt.new(modelbuilder_xslt(), to_xml()).to_s    
   end
+  
+  def to_rsf
+    Rexslt.new(rsf_xslt(), to_xml(), debug: @debug).to_xml
+  end  
 
   def to_xml()
 
@@ -135,6 +139,60 @@ endpoint: <xsl:value-of select='summary/endpoint' />
   </xsl:text>
   <xsl:value-of select='.' />
 
+  </xsl:template>
+
+
+</xsl:stylesheet>
+EOF
+  end
+  
+  def rsf_xslt()
+<<EOF    
+<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'>
+<xsl:output method="xml" indent="yes" omit-xml-declaration="yes" />
+
+  <xsl:template match='model'>
+<xsl:element name='skill'>
+<xsl:text>
+</xsl:text>
+      <xsl:apply-templates select='entries/entry' />
+<xsl:text>
+</xsl:text>
+</xsl:element>
+  </xsl:template>
+
+  <xsl:template match='entries/entry'>
+<xsl:text>
+  </xsl:text>
+  <xsl:comment><xsl:text>  </xsl:text><xsl:value-of select='topic' /><xsl:text>  </xsl:text></xsl:comment><xsl:text>
+</xsl:text>
+
+  <xsl:apply-templates select='intents/intent' />
+  <xsl:text>  </xsl:text><xsl:comment><xsl:text>  // </xsl:text><xsl:value-of select='topic' /><xsl:text>  </xsl:text></xsl:comment><xsl:text>
+</xsl:text>
+
+  </xsl:template>
+
+  <xsl:template match='intents/intent'><xsl:text>  </xsl:text>
+    <xsl:element name='response'>
+   <xsl:attribute name='id'><xsl:value-of select='name' /></xsl:attribute><xsl:text>
+    </xsl:text>
+    <xsl:element name='script'>
+<xsl:text disable-output-escaping="yes">
+    &lt;![CDATA[
+</xsl:text>
+      <xsl:value-of select='code' />
+<xsl:text disable-output-escaping="yes">
+    ]]&gt;</xsl:text>
+
+<xsl:text>
+    </xsl:text>
+      </xsl:element>
+
+<xsl:text>
+  </xsl:text>
+ </xsl:element><xsl:text>
+</xsl:text>
   </xsl:template>
 
 
