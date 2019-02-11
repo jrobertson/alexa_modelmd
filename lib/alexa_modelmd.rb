@@ -2,8 +2,8 @@
 
 # file: alexa_modelmd.rb
 
-# description: Using a WikiMd foramtted document, generates a basic Amazon 
-#              Alexa model in XML format, as well as other formats.
+# description: Using a WikiMd foramatted document, this generates a basic
+#              Amazon Alexa model in XML format, as well as other formats.
 
 
 require 'wiki_md'
@@ -20,8 +20,8 @@ class AlexaModelMd < WikiMd
       
       @debug = debug
       puts ('Intent | s: ' + s.inspect).debug if @debug
-      doc = Rexle.new("<root9>%s</root9>" % \
-        Kramdown::Document.new(Martile.new(s).to_s).to_html)
+      html = Kramdown::Document.new(Martile.new(s).to_html).to_html
+      doc = Rexle.new("<root9>%s</root9>" % html)
       @name = doc.root.element('h2/text()').to_s
       @utterances = doc.root.xpath('ul/li/text()').map(&:to_s)
       puts ('doc: ' + doc.root.xml.inspect).debug if @debug
