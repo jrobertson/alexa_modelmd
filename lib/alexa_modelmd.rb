@@ -10,6 +10,7 @@ require 'wiki_md'
 
 
 class AlexaModelMd < WikiMd
+  using ColouredText
 
   class Intent
     using ColouredText
@@ -30,6 +31,42 @@ class AlexaModelMd < WikiMd
     end
 
   end
+  
+  def initialize(wiki=nil, keywords={})
+    
+    wcis = keywords.delete :whatcanisay
+    puts 'wcis: ' + wcis.inspect if @debug
+    
+    super(wiki, keywords)
+    
+    if wcis then
+      
+      found = self.find 'What can I say'
+
+      if not found then
+        
+        s=<<EOF        
+# What can I say
+
+## WhatCanISay
+        
+* what can I say
+* give me some examples
+
+`
+#rsc.alexamodelmd.sample_utterances '#{self.title}'
+"Not yet enabled."
+`
+
++ help whatcanisay
+EOF
+
+        self.create_section s
+        
+      end
+
+    end
+  end
 
   def entries()
 
@@ -47,6 +84,11 @@ class AlexaModelMd < WikiMd
     end
 
   end
+  
+  def endpoint()      @dxsx.dx.endpoint       end
+  def endpoint=(s)    @dxsx.dx.endpoint = s   end  
+  def invocation()    @dxsx.dx.invocation     end
+  def invocation=(s)  @dxsx.dx.invocation = s end
   
   # Transforms the document into an Alexa_modelmd formatted document
   #
