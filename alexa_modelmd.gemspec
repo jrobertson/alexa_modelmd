@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = 'alexa_modelmd'
-  s.version = '0.3.3'
-  s.summary = 'Using a WikiMd foramtted document, generates a basic Amazon ' + 
+  s.version = '0.3.4'
+  s.summary = 'Using a WikiMd formatted document, generates a basic Amazon ' + 
               'Alexa model in XML format, as well as other formats.'
   s.authors = ['James Robertson']
   s.files = Dir['lib/alexa_modelmd.rb']

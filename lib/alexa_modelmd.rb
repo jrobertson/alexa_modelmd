@@ -8,6 +8,9 @@
 
 require 'wiki_md'
 
+class AMSummaryExceptiom < Exception
+end
+
 
 class AlexaModelMd < WikiMd
   using ColouredText
@@ -89,6 +92,22 @@ EOF
   def endpoint=(s)    @dxsx.dx.endpoint = s   end  
   def invocation()    @dxsx.dx.invocation     end
   def invocation=(s)  @dxsx.dx.invocation = s end
+    
+  def save_rsf()
+    if @dxsx.dx.respond_to? :rsf_file then
+      FileX.write @dxsx.dx.rsf_file, to_rsf()
+    else
+      raise AMSummaryExceptiom, 'no rsf_file summary field found'
+    end
+  end
+  
+  def save_txt()
+    if @dxsx.dx.respond_to? :txt_file then
+      FileX.write @dxsx.dx.txt_file, to_txt()
+    else
+      raise AMSummaryExceptiom, 'no txt_file summary field found'
+    end
+  end  
   
   # Transforms the document into an Alexa_modelmd formatted document
   #
