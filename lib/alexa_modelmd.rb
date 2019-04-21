@@ -8,6 +8,7 @@
 
 require 'wiki_md'
 
+
 class AMSummaryExceptiom < Exception
 end
 
@@ -128,6 +129,8 @@ EOF
     Rexslt.new(rsf_xslt(), to_xml(), debug: @debug).to_s
   end  
 
+  # note: An intent or an utterance can't contain numbers
+  #
   def to_xml()
 
     a = RexleBuilder.build do |xml|
@@ -151,11 +154,11 @@ EOF
 
                   xml.intent do
 
-                    xml.name intent.name
+                    xml.name intent.name.gsub(/\d+/, '')
 
                     xml.utterances do
                       intent.utterances.each do |utterance|
-                        xml.utterance utterance
+                        xml.utterance utterance.gsub(/\d+/, '')
                       end
                     end
 
