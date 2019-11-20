@@ -131,7 +131,7 @@ EOF
 
   # note: An intent or an utterance can't contain numbers
   #
-  def to_xml()
+  def to_doc()
 
     a = RexleBuilder.build do |xml|
 
@@ -182,8 +182,17 @@ EOF
       end #/model
     end
 
-    Rexle.new(a).xml pretty: true
+    Rexle.new(a)
 
+  end
+  
+  def to_xml()
+    to_doc.xml pretty: true
+  end
+  
+  def utterances()
+    to_doc.root.xpath('//entries/entry/intents/intent/' + 
+                                 'utterances/utterance').map(&:text)
   end
   
   private
